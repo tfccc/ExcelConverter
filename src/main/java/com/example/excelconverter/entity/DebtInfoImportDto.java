@@ -30,30 +30,30 @@ public class DebtInfoImportDto implements IExcelDataModel, IExcelModel {
 
 
     @Excel(name = "债务主体", fixedIndex = 0)
-    private String debtSubject = null;
+    private String debtSubject;
 
     @Excel(name = "贷款银行/公司", fixedIndex = 1)
-    private String loanCompanyOrBank = null;
+    private String loanCompanyOrBank;
 
     @Excel(name = "类别", fixedIndex = 2)
-    private String type = null;
+    private String type;
 
     @Excel(name = "合同金额", fixedIndex = 3)
-    private String contactAmount = null;
+    private String contactAmount;
 
     @Excel(name = "剩余未还", fixedIndex = 4)
-    private String remainingUnReturned = null;
+    private String remainingUnReturned;
 
     @Excel(name = "本金", fixedIndex = 5)
-    private BigDecimal principal = null;
+    private BigDecimal principal;
     @Excel(name = "利息", fixedIndex = 6)
-    private BigDecimal interest = null;
+    private BigDecimal interest;
     @Excel(name = "本息合计", fixedIndex = 7)
-    private BigDecimal principalAndInterest = null;
+    private BigDecimal principalAndInterest;
 
-    @Excel(name = "利息日期", format = "yyyy年MM月dd日", fixedIndex = 8)
-    private Date interestDate = null;
-    @Excel(name = "本金日期", format = "yyyy年MM月dd日", fixedIndex = 9)
-    private Date principalDate = null;
+    @Excel(name = "本金日期", importFormat = "yyyy年MM月dd日",/*format = "yyyy年MM月dd日",*/ fixedIndex = 8)
+    private String principalDate;
+    @Excel(name = "利息日期", importFormat = "yyyy年MM月dd日",/*format = "yyyy年MM月dd日",*/ fixedIndex = 9)
+    private String interestDate;
 
 }
