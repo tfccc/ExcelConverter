@@ -2,33 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ACT_FEEDBACK_PAPER_NOTICE</title>
+    <title>Excel转换器</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.7.0/jquery.min.js"
             crossorigin="anonymous">
     </script>
 </head>
 
 <script>
-    function hello() {
-        window.alert("hello");
+    function reInput() {
+        document.querySelector("#file").addEventListener("click",
+            function (event) {
+                console.log('reInput');
+                $("#file").val("");
+            })
     }
 
     function fileUpLoad() {
-        if ($("#file").val().length <= 0) {
+        if ($('#file').val().length <= 0) {
             window.alert("请选择文件");
             return;
         }
-        var file = $("#file")[0].files[0];
+        var file = $('#file')[0].files[0];
         var formData = new FormData();
         formData.append("file", file);
         $.ajax({
             type: 'post',
-            url: 'http://localhost:8080/upload/test',
+            url: 'http://localhost:8080/upload/uploadAndConvert',
             processData: false,
             contentType: false,
             data: formData,
             success: function (msg) {
-                window.alert(msg);
+                if (msg === "e_1000") {
+                    window.alert("请先选择文件");
+                } else if (msg === "e_1001") {
+                    window.alert("仅支持xls/xlsx格式的文件");
+                } else if (msg === "e_1002") {
+                    window.alert("文件中没有读取到有效数据");
+                } else if (msg === "s_1000") {
+                    window.alert("生成成功，请在桌面查看结果，文件名：源文件名+时间后缀");
+                } else {
+                    window.alert("unknown error");
+                }
+                $("#file").val("");
             }
         })
     }
@@ -48,7 +63,7 @@
             <tbody>
             <tr style="margin: 0;">
                 <td style="width:468pt;height:200pt;padding:11pt 20pt 0;color:#333;" align="center">
-                    <input type="file" id="file">
+                    <input type="file" id="file" onchange="reInput()">
                     <input type="button" onclick="fileUpLoad()" value="确定上传">
                 </td>
             </tr>

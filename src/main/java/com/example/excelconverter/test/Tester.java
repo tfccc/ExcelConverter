@@ -25,7 +25,7 @@ public class Tester {
     public static void main(String[] args) {
         try {
             List<ExcelExportEntity> colList = new ArrayList<>();
-            ExcelExportEntity colEntity = new ExcelExportEntity("时间", "date", 30);
+            ExcelExportEntity colEntity = new ExcelExportEntity("时间", "date", 25);
             colList.add(colEntity);
 
             ExcelExportEntity deliColGroup = new ExcelExportEntity("债务主体", "debtSubject");
@@ -35,7 +35,6 @@ public class Tester {
             deliColList.add(new ExcelExportEntity("B公司", "B公司", 15));
             deliColList.add(new ExcelExportEntity("C公司", "C公司", 15));
             deliColList.add(new ExcelExportEntity("D公司", "D公司", 15));
-            deliColList.add(new ExcelExportEntity("E公司", "E公司", 15));
             deliColList.add(new ExcelExportEntity("总计", "total", 15));
             deliColGroup.setList(deliColList);
             colList.add(deliColGroup);
@@ -54,7 +53,6 @@ public class Tester {
                 deliValMap.put("B公司", 600 + i);
                 deliValMap.put("C公司", 2000 + i);
                 deliValMap.put("D公司", 1150 + i);
-                deliValMap.put("E公司", 1500 + i);
                 deliValMap.put("total", 10000 + i);
                 deliDetailList.add(deliValMap);
 
@@ -69,7 +67,7 @@ public class Tester {
             Workbook workbook = ExcelExportUtil.exportExcel(exportParams, colList, list);
             Date date = new Date();
             FileOutputStream fos = new FileOutputStream(
-                    "D:/价格分析表" +
+                    "C:/Users/fengchengtang-c/IdeaProjects/ExcelConverter/src/main/resources/temp/模拟导出" +
                             date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds() +
                             ".xls"
             );
