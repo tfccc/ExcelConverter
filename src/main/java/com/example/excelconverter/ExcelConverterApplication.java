@@ -11,11 +11,11 @@ public class ExcelConverterApplication {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(ExcelConverterApplication.class);
         builder.headless(false).web(WebApplicationType.SERVLET).run(args);
 
-        System.out.println("-----------------服务启动成功-----------------");
-        System.out.println("-----------------服务启动成功-----------------");
-        System.out.println("-----------------服务启动成功-----------------");
+        System.out.println("-----------------------服务启动成功-----------------------");
+        System.out.println("-----------------------服务启动成功-----------------------");
+        System.out.println("-----------------------服务启动成功-----------------------");
         //打开网页
-        //FileUtil.browserOpenFile("/static/html/upload.html");
+        //FileUtil.browserOpenFile("/static/html/convert.html");
     }
 
 }

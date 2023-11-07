@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Excel转换器</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.7.0/jquery.min.js"
+            crossorigin="anonymous">
+    </script>
+</head>
+
+<script>
+    function reInput() {
+        document.querySelector("#file").addEventListener("click",
+            function (event) {
+                console.log('reInput');
+                $("#file").val("");
+            })
+    };
+
+    function fileUpLoad() {
+        if ($('#file').val().length <= 0) {
+            window.alert("请选择文件");
+            return;
+        }
+        var file = $('#file')[0].files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:8080/upload/uploadAndConvert',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (msg) {
+                if (msg === "e_1000") {
+                    window.alert("请先选择文件");
+                } else if (msg === "e_1001") {
+                    window.alert("仅支持xls/xlsx格式的文件");
+                } else if (msg === "e_1002") {
+                    window.alert("文件中没有读取到有效数据");
+                } else if (msg === "s_1000") {
+                    window.alert("生成成功，请在桌面查看结果");
+                } else {
+                    window.alert("unknown error");
+                }
+                $("#file").val("");
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            window.alert("服务调用出错: 服务器未启动, 或文件格式有误");
+        });
+    }
+</script>
+
+<body style="background-color: #F2F2F2;">
+<div style="margin: 0; padding: 0;background-color: #F2F2F2;width: 100%;padding-bottom: 50pt;">
+    <div align="center">
+        Excel转换器
+    </div>
+    <div align="center">
+        <p style="margin:0;"><span style="font-size:16pt;">&nbsp;</span></p>
+    </div>
+    <div align="center">
+        <table border="0" cellspacing="0" cellpadding="0"
+               style="background-color:white;width:0;border-collapse:collapse;">
+            <tbody>
+            <tr style="margin: 0;">
+                <td style="width:468pt;height:200pt;padding:11pt 20pt 0;color:#333;" align="center">
+                    <input type="file" id="file" onchange="reInput()">
+                    <input type="button" onclick="fileUpLoad()" value="确定上传">
+                </td>
+            </tr>
+            <tr style="margin: 0;">
+                <td style="width:468pt; padding:0 20pt;">
+                    <table style="width:428pt;">
+                        <tr>
+                            <td style="width:428pt; height: 1px; background-color:#E6E6E6; padding: 0"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr style="margin: 0;">
+                <td style="width:468pt;padding:11pt 20pt 18pt;color:#333;">
+                    <p style="margin:0;">
+                        <span style="font-family: MicrosoftYaHei;color:#999999;font-size:9pt;line-height: 16pt;">
+                        请注意：上传文件的格式固定(表头/内容等); 文件默认下载到桌面文件夹; 文件大小限制50Mb
+                        </span>
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+</body>
+
+</html>
