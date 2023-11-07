@@ -15,7 +15,7 @@
                 console.log('reInput');
                 $("#file").val("");
             })
-    }
+    };
 
     function fileUpLoad() {
         if ($('#file').val().length <= 0) {
@@ -45,7 +45,9 @@
                 }
                 $("#file").val("");
             }
-        })
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            window.alert("服务调用出错: 服务器未启动, 或文件格式有误");
+        });
     }
 </script>
 
@@ -80,7 +82,7 @@
                 <td style="width:468pt;padding:11pt 20pt 18pt;color:#333;">
                     <p style="margin:0;">
                         <span style="font-family: MicrosoftYaHei;color:#999999;font-size:9pt;line-height: 16pt;">
-                        请注意：上传文件的格式固定; 文件默认下载到桌面文件夹; 文件大小限制50Mb
+                        请注意：上传文件的格式固定(表头/内容等); 文件默认下载到桌面文件夹; 文件大小限制50Mb
                         </span>
                     </p>
                 </td>

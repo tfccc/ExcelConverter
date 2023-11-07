@@ -9,6 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <packaging>jar</packaging>
     <groupId>com.example</groupId>
     <artifactId>ExcelConverter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -55,6 +56,7 @@
     </dependencies>
 
     <build>
+        <finalName>ExcelConverter</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,6 +1,5 @@
 package com.example.excelconverter;
 
-import com.example.excelconverter.util.FileUtil;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,8 +11,11 @@ public class ExcelConverterApplication {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(ExcelConverterApplication.class);
         builder.headless(false).web(WebApplicationType.SERVLET).run(args);
 
+        System.out.println("-----------------服务启动成功-----------------");
+        System.out.println("-----------------服务启动成功-----------------");
+        System.out.println("-----------------服务启动成功-----------------");
         //打开网页
-        FileUtil.browserOpenFile("/static/html/upload.html");
+        //FileUtil.browserOpenFile("/static/html/upload.html");
     }
 
 }
