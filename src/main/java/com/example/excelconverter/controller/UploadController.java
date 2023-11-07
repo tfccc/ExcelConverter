@@ -120,20 +120,20 @@ public class UploadController {
                                        Map<String, BigDecimal> totalByNameMap, Map<String, BigDecimal> totalByDateMap,
                                        BigDecimal allTotal, Set<String> nameSet) {
         List<ExcelExportEntity> colList = new ArrayList<>();
-        ExcelExportEntity colEntity = new ExcelExportEntity("时间", "date", 16);
+        ExcelExportEntity colEntity = new ExcelExportEntity("时间", "date", 18);
         colList.add(colEntity);
 
         ExcelExportEntity deliColGroup = new ExcelExportEntity("债务主体", "debtSubject");
         List<ExcelExportEntity> deliColList = new ArrayList<>();
         // n列公司
         for (String name : nameSet) {
-            ExcelExportEntity colum = new ExcelExportEntity(name, name, 15);
-            deliColList.add(colum);
+            ExcelExportEntity col = new ExcelExportEntity(name, name, 15);
+            deliColList.add(col);
             deliColGroup.setList(deliColList);
         }
         // 最后一列总计
-        ExcelExportEntity lastColum = new ExcelExportEntity("总计", "total", 9);
-        deliColList.add(lastColum);
+        ExcelExportEntity lastCol = new ExcelExportEntity("总计", "total", 15);
+        deliColList.add(lastCol);
         colList.add(deliColGroup);
 
         // 表格填充值
@@ -237,8 +237,10 @@ public class UploadController {
 
             for (DebtInfoImportDto dto : list) {
                 Map<String, BigDecimal> daMap = res.get(name);
-                String principalDate = convertDate(dto.getPrincipalDate());
-                String interestDate = convertDate(dto.getInterestDate());
+                /*String principalDate = convertDate(dto.getPrincipalDate());
+                String interestDate = convertDate(dto.getInterestDate());*/
+                String principalDate = dto.getPrincipalDate();
+                String interestDate = dto.getInterestDate();
                 BigDecimal principal = dto.getPrincipal() == null ? BigDecimal.ZERO : dto.getPrincipal();
                 BigDecimal interest = dto.getInterest() == null ? BigDecimal.ZERO : dto.getInterest();
 
