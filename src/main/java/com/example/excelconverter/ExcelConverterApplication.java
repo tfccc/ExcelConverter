@@ -1,7 +1,6 @@
 package com.example.excelconverter;
 
 import com.example.excelconverter.util.FileUtil;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
