@@ -170,14 +170,14 @@ public class UploadController {
         List<Map<String, Object>> deliDetailList = new ArrayList<>();
         Map<String, Object> deliValMap = new HashMap<>();
 
-        // put当前，公司对应的金额
+        // put最后一行公司对应的金额
         for (String name : nameSet) {
             deliValMap.put(name, totalByNameMap.get(name));
         }
-        // put当前行的总计
+        // put最后一行的总计
         deliValMap.put("total", allTotal);
         deliDetailList.add(deliValMap);
-        // put当前行的日期
+        // put最后一行的日期
         valMap.put("date", "总计");
         valMap.put("debtSubject", deliDetailList);
         valList.add(valMap);
