@@ -7,6 +7,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.example.excelconverter.constant.StringConstants;
+import com.example.excelconverter.entity.ComResult;
 import com.example.excelconverter.entity.DebtInfoImportDto;
 import com.example.excelconverter.esaypoi.ExcelExportStyler;
 import com.example.excelconverter.util.DateUtil;
@@ -38,22 +39,22 @@ public class UploadController {
 
 
     @PostMapping("/uploadAndConvert")
-    public String uploadServerFile(MultipartFile file, HttpServletRequest req) {
+    public ComResult uploadServerFile(MultipartFile file, HttpServletRequest req) {
         // 没传文件
         if (file == null) {
-            return "e_1000";
+            return ComResult.error("请先选择文件");
         }
         // 不是excel文件
         if (!file.getOriginalFilename().endsWith(".xls")
                 && !file.getOriginalFilename().endsWith(".xlsx")) {
-            return "e_1001";
+            return ComResult.error("仅支持xls/xlsx格式的文件");
         }
 
         // 读取文件
         List<DebtInfoImportDto> readData = readFile(file);
         // 没读到数据
         if (CollectionUtils.isEmpty(readData)) {
-            return "e_1002";
+            return ComResult.error("文件中没有读取到有效数据");
         }
 
         // 转为新的excel
@@ -63,7 +64,7 @@ public class UploadController {
             throw new RuntimeException(e);
         }
 
-        return "s_1000";
+        return ComResult.success();
     }
 
 

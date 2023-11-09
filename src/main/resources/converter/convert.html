@@ -15,7 +15,7 @@
                 console.log('reInput');
                 $("#file").val("");
             })
-    };
+    }
 
     function fileUpLoad() {
         if ($('#file').val().length <= 0) {
@@ -32,14 +32,11 @@
             contentType: false,
             data: formData,
             success: function (msg) {
-                if (msg === "e_1000") {
-                    window.alert("请先选择文件");
-                } else if (msg === "e_1001") {
-                    window.alert("仅支持xls/xlsx格式的文件");
-                } else if (msg === "e_1002") {
-                    window.alert("文件中没有读取到有效数据");
-                } else if (msg === "s_1000") {
+                var code = msg.code;
+                if (code === 200) {
                     window.alert("生成成功，请在桌面查看结果");
+                } else if (code === 500) {
+                    window.alert(msg.msg);
                 } else {
                     window.alert("unknown error");
                 }
