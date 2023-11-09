@@ -249,7 +249,7 @@ public class UploadController {
                     Map<String, BigDecimal> ndaMap = new HashMap<>();
 
                     ndaMap.put(interestDate, interest);
-                    if (principalDate != null && ndaMap.containsKey(principalDate)) {
+                    if (principalDate != null && principalDate.equals(interestDate)) {
                         ndaMap.put(principalDate, ndaMap.get(principalDate).add(principal));
                     } else {
                         ndaMap.put(principalDate, principal);
