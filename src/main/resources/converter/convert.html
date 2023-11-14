@@ -34,16 +34,16 @@
             success: function (msg) {
                 var code = msg.code;
                 if (code === 200) {
-                    window.alert("生成成功，请在桌面查看结果");
+                    window.alert("生成成功，请在【C:\\zExcelConverter\\】文件夹下查看");
                 } else if (code === 500) {
-                    window.alert(msg.msg);
+                    window.alert('服务调用出错, ' + msg.msg);
                 } else {
-                    window.alert("unknown error");
+                    window.alert("服务调用出错, 原因：未知");
                 }
                 $("#file").val("");
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            window.alert("服务调用出错: 服务器未启动, 或文件格式有误");
+            window.alert("服务调用出错");
         });
     }
 </script>
@@ -51,7 +51,7 @@
 <body style="background-color: #F2F2F2;">
 <div style="margin: 0; padding: 0;background-color: #F2F2F2;width: 100%;padding-bottom: 50pt;">
     <div align="center">
-        Excel转换器 v1.1
+        Excel转换器 v1.2
     </div>
     <div align="center">
         <p style="margin:0;"><span style="font-size:16pt;">&nbsp;</span></p>
@@ -79,7 +79,7 @@
                 <td style="width:468pt;padding:11pt 20pt 18pt;color:#333;">
                     <p style="margin:0;">
                         <span style="font-family: MicrosoftYaHei;color:#999999;font-size:9pt;line-height: 16pt;">
-                        请注意：上传文件的格式固定(表头/内容等); 文件默认下载到桌面文件夹; 文件大小限制50Mb
+                        请注意：上传文件的格式固定(表头/内容等); 文件默认下载到C:\zExcelConverter; 文件大小限制50Mb
                         </span>
                     </p>
                 </td>

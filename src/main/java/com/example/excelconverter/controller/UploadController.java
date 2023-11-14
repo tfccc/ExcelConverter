@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import com.example.excelconverter.constant.PathConstants;
 import com.example.excelconverter.constant.StringConstants;
 import com.example.excelconverter.entity.ComResult;
 import com.example.excelconverter.entity.DebtInfoImportDto;
@@ -21,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Frank.Tang
@@ -53,7 +56,10 @@ public class UploadController {
         // 读取文件
         List<DebtInfoImportDto> readData = readFile(file);
         // 没读到数据
-        if (CollectionUtils.isEmpty(readData)) {
+        if (readData == null) {
+            return ComResult.error("读取文件失败");
+        }
+        if (readData.isEmpty()) {
             return ComResult.error("文件中没有读取到有效数据");
         }
 
@@ -105,10 +111,8 @@ public class UploadController {
         exportParams.setStyle(ExcelExportStyler.class);
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, colList, valList);
 
-        String desktopPath = System.getProperty("user.home") + "\\Desktop\\";
-
         FileOutputStream fos = new FileOutputStream(
-                desktopPath + titleAndSheetName + "_" +
+                PathConstants.EXCEL_GEN_DEFAULT_PATH + titleAndSheetName + "_" +
                         DateUtil.getDateStr(DateUtil.YEAR_MONTH_DAY_HOUR_0) +
                         (fileName.endsWith(".xls") ? ".xls" : ".xlsx")
         );
@@ -302,7 +306,8 @@ public class UploadController {
 
             return result.getList();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
