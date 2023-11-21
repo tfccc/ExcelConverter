@@ -22,13 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author Frank.Tang
@@ -45,38 +44,27 @@ public class UploadController {
     public ComResult uploadServerFile(MultipartFile file, HttpServletRequest req) {
         // 没传文件
         if (file == null) {
-            return ComResult.error("请先选择文件");
+            throw new RuntimeException("请先选择文件");
         }
         // 不是excel文件
         if (!file.getOriginalFilename().endsWith(".xls")
                 && !file.getOriginalFilename().endsWith(".xlsx")) {
-            return ComResult.error("仅支持xls/xlsx格式的文件");
+            throw new RuntimeException("仅支持xls/xlsx格式的文件");
         }
 
         // 读取文件
         List<DebtInfoImportDto> readData = readFile(file);
-        // 没读到数据
-        if (readData == null) {
-            return ComResult.error("读取文件失败");
-        }
-        if (readData.isEmpty()) {
-            return ComResult.error("文件中没有读取到有效数据");
-        }
 
         // 转为新的excel
-        try {
-            convert(readData, file.getOriginalFilename());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        convert(readData, file.getOriginalFilename());
 
-        return ComResult.success();
+        return ComResult.success("生成成功");
     }
 
 
     /** 转为新的文件 **/
     @SuppressWarnings("unchecked")
-    private void convert(List<DebtInfoImportDto> data, String fileName) throws Exception {
+    private void convert(List<DebtInfoImportDto> data, String fileName) {
         Map<String, List<DebtInfoImportDto>> byDebtSubject = data.stream()
                 .collect(Collectors.groupingBy(DebtInfoImportDto::getDebtSubject));
 
@@ -111,13 +99,18 @@ public class UploadController {
         exportParams.setStyle(ExcelExportStyler.class);
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, colList, valList);
 
-        FileOutputStream fos = new FileOutputStream(
-                PathConstants.EXCEL_GEN_DEFAULT_PATH + titleAndSheetName + "_" +
-                        DateUtil.getDateStr(DateUtil.YEAR_MONTH_DAY_HOUR_0) +
-                        (fileName.endsWith(".xls") ? ".xls" : ".xlsx")
-        );
-        workbook.write(fos);
-        fos.close();
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(
+                    PathConstants.EXCEL_GEN_DEFAULT_PATH + titleAndSheetName + "_" +
+                            DateUtil.getDateStr(DateUtil.YEAR_MONTH_DAY_HOUR_0) +
+                            (fileName.endsWith(".xls") ? ".xls" : ".xlsx")
+            );
+            workbook.write(fos);
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException("文件生成过程中发生异常");
+        }
     }
 
     /** 构建单元格结构+单元格对应的数据 **/
@@ -242,8 +235,6 @@ public class UploadController {
 
             for (DebtInfoImportDto dto : list) {
                 Map<String, BigDecimal> daMap = res.get(name);
-                /*String principalDate = convertDate(dto.getPrincipalDate());
-                String interestDate = convertDate(dto.getInterestDate());*/
                 String principalDate = dto.getPrincipalDate();
                 String interestDate = dto.getInterestDate();
                 BigDecimal principal = dto.getPrincipal() == null ? BigDecimal.ZERO : dto.getPrincipal();
@@ -286,48 +277,38 @@ public class UploadController {
     /** 读取文件数据 **/
     private List<DebtInfoImportDto> readFile(MultipartFile file) {
         ExcelImportResult<DebtInfoImportDto> result;
+        ImportParams importParams = new ImportParams();
+        importParams.setHeadRows(2);
 
         try {
-            ImportParams importParams = new ImportParams();
-            importParams.setHeadRows(2);
             result = ExcelImportUtil.importExcelMore(
                     file.getInputStream(),
                     DebtInfoImportDto.class,
                     importParams
             );
-
-            // 去掉部分数据
-            result.getList().removeIf(o ->
-                    StringUtils.isEmpty(o.getDebtSubject()) ||
-                            o.getDebtSubject().contains(StringConstants.SPECIAL_STR_1) ||
-                            o.getDebtSubject().contains(StringConstants.SPECIAL_STR_2) ||
-                            o.getDebtSubject().contains(StringConstants.SPECIAL_STR_3)
-            );
-
-            return result.getList();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("文件读取失败");
         }
+
+        // 去掉部分数据
+        List<DebtInfoImportDto> res = result.getList();
+
+        res.removeIf(o -> StringUtils.isEmpty(o.getDebtSubject()) ||
+                o.getDebtSubject().contains(StringConstants.SPECIAL_STR_1) ||
+                o.getDebtSubject().contains(StringConstants.SPECIAL_STR_2) ||
+                o.getDebtSubject().contains(StringConstants.SPECIAL_STR_3)
+        );
+
+        if (CollectionUtils.isEmpty(res)) {
+            throw new RuntimeException("文件中没有读取到有效数据");
+        }
+        return res;
     }
 
 
     private final static String DATE_REGEX = "\\d+年\\d+月\\d+日";
-    private final static String DATE_UINT_REGEX = "[年月日]";
     private final static Pattern DATE_PATTERN = Pattern.compile(DATE_REGEX);
 
-    /** 2023年11月7日 转为 7/11/2023  **/
-    private static String convertDate(String date) {
-        if (date == null || !DATE_PATTERN.matcher(date).matches()) {
-            return null;
-        }
-        // {年/月/日}
-        String[] split = date.split(DATE_UINT_REGEX);
-        List<String> list = Arrays.asList(split);
-        // {日/月/年}
-        Collections.reverse(list);
-        return String.join("/", list);
-    }
 
     /** 2023年11月7日 提取 2023年11月  **/
     private static String getYearAndMonth(String date) {

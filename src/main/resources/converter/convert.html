@@ -35,16 +35,17 @@
                 var code = msg.code;
                 if (code === 200) {
                     window.alert("生成成功，请在【C:\\zExcelConverter\\】文件夹下查看");
-                } else if (code === 500) {
-                    window.alert('服务调用出错, ' + msg.msg);
                 } else {
-                    window.alert("服务调用出错, 原因：未知");
+                    window.alert("运行异常");
                 }
                 $("#file").val("");
+            },
+            error: function (msg) {
+                console.log(msg.responseJSON.msg);
+                window.alert(msg.responseJSON.msg);
+                $("#file").val("");
             }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            window.alert("服务调用出错");
-        });
+        })
     }
 </script>
 
